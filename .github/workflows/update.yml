@@ -1,0 +1,33 @@
+name: Update IPTV Rules
+
+on:
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Install requests
+      run: pip install requests
+
+    - name: Run script
+      run: python generate.py
+
+    - name: Commit changes
+      run: |
+        git config --global user.name "bot"
+        git config --global user.email "bot@example.com"
+        git add iptv.list
+        git commit -m "update rules" || echo "no changes"
+        git push
